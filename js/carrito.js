@@ -1,131 +1,129 @@
-import { productosDisponibles } from "./inicio"
+import { productosdisponibles } from "./inicio.js";
 
 JSON.parse(sessionStorage.getItem("carrito")) === null && sessionStorage.setItem("carrito", JSON.stringify([]))
-
-
-document.addEventListener("DOMContentLoaded", () => {
-    dibujarCarrito()
+document.addEventListener("DOMContentLoaded", () =>  {
+    dibujarcarrito()
 })
 
-
 let carrito = JSON.parse(sessionStorage.getItem("carrito"))
-const listaCarrito = document.getElementById("items")
-const footCarrito = document.getElementById("totales")
-const btnCarrito = document.getElementById("btnCarrito")
+const listacarrito = document.getElementById("items")
+const footcarrito = document.getElementById("totales")
+const btncarrito = document.getElementById("btncarrito")
+const carritotabla = document.getElementById("carrito")
+ 
+btncarrito.addEventListener("click", () => {
 
-const carritoTable = document.getElementById("carrito")
 
-
-btnCarrito.addEventListener("click", () => {    
-    if(carritoTable.style.display === "block"){
-        carritoTable.style.display = "none"
-    }else{
-        carritoTable.style.display = "block"
-        dibujarCarrito()
-    }
+if (carritotabla.style.display === "block") {
     
-    })
+    carritotabla.style.display === "none"
+}else{
+    carritotabla.style.display === "block"
+    dibujarcarrito()
+}
 
-export const comprarProducto = (idProducto) => {
 
-    const producto = productosDisponibles.find((producto) => producto.id === idProducto)
+});
 
-    const { nombre, precio, imagen, id } = producto
+export const comprarproducto = (idproducto) => {
 
-    const productoCarrito = carrito.find((producto) => producto.id === idProducto)
+const producto = productosdisponibles.find((producto) => producto.id === idproducto )
 
-    if(productoCarrito === undefined){
-        const nuevoProductoCarrito = {
-            id: id,
-            nombre: nombre,
-            precio: precio,
-            imagen: imagen,
-            cantidad: 1
-        }
+const {imagen, nombre, precio, id} = Element
 
-    carrito.push(nuevoProductoCarrito)
-    sessionStorage.setItem("carrito", JSON.stringify(carrito) )
-    }else{
-        const indexProductoCarrito = carrito.findIndex((producto) => producto.id === idProducto)
+const productocarrito = carrito.find ((producto) => producto.id === idproducto )
+if (productocarrito === undefined){
+    const nuevoproductocarrito = {
+        id:id,
+        nombre:nombre,
+        precio: precio,
+        imagen: imagen,
+        cantidad: 1
+    }
+        carrito.push(nuevoproductocarrito)
+   sessionStorage.setItem("carrito", JSON.stringify(carrito))
+}else{
 
-        carrito[indexProductoCarrito].cantidad++
-        carrito[indexProductoCarrito].precio = precio * carrito[indexProductoCarrito].cantidad
+const indexproductocarrito = carrito.findIndex((producto) => producto.id === idproducto )
+carrito[indexproductocarrito].cantidad++
+carrito[indexproductocarrito].precio = precio * carrito[indexproductocarrito].cantidad
+sessionStorage.setItem("carrito", JSON.stringify(carrito))
 
-        sessionStorage.setItem("carrito", JSON.stringify(carrito))
+
     }
     carrito = JSON.parse(sessionStorage.getItem("carrito"))
+    Swal.fire(
+        'agregado al carrito!',
+        'You clicked the button!',
+        'success'
+      )
+      console.log(carrito)
+}
 
-    alert(`usted compro el producto ${nombre}`)
+const dibujarcarrito = () => {
+    
+    listacarrito.innerHTML = ""
+    
+    carrito.forEach(element => {
+        const {imagen, id, nombre, precio} = element
+let body = document.createElement("tr")
+body.className = "producto__carrito"
+body.innerHTML = `
+<th><img id="fotoproductocarrito" src="${imagen}" class = "card-img-top" </th>
+<td>${nombre}</td>
+<td>${cantidad}</td>
+<td>${precio/cantidad}</td>
+<td>${precio}</td>
+
+<td>
+
+<button id="+${id}" class="btn btn-success" >+</button>
+<button id="-${id}" class = "btn btn-danger" >-</button>
+</td>
+`
+listacarrito.append(body)
+const btnagregar = document.getElementById(`+${id}`)
+const btnrestar = document.getElementById(`-${id}`)
+btnagregar.addEventListener("click", () => aumentarcantidad(id))
+btnrestar.addEventListener("click", () => restarcantidad(id))
+
+
+});
+dibujarfooter()
 
 }
 
-const dibujarCarrito = () => {
+const dibujarfooter = () => {
+if (carrito.length > 0){
+    footcarrito.innerHTML = ""
 
-        listaCarrito.innerHTML = ''
-    carrito.forEach(producto => {
-        const { imagen, nombre, cantidad, precio, id } = producto
-        let body = document.createElement("tr")
+    let footer = document.createElement("tr")
+    footer.innerHTML = `
+    <th><b>totales:</b></th>
+    <td></td>
+    <td>${generartotales().cantidadtotal}</td>
+    <td></td>
+    <td> ${generartotales().costototal}</td>
+    `
 
-        body.className = "producto__carrito"
-
-        body.innerHTML = `
-        <th><img id="fotoProductoCarrito" src="${imagen}" class="card-img-top" style="width:40%; height: 30%"</th>
-        <td>${nombre}</td>
-        <td>${cantidad}</td>
-        <td>${precio /cantidad}</td>
-        <td>${precio}</td>
-        <td>
-        <button id="+${id}" class="btn btn-success">+</button>
-        <button id="-${id}" class="btn btn-danger">-</button>
-        </td>
-        `
-
-        listaCarrito.append(body)
-        
-        const btnAgregar = document.getElementById(`+${id}`)
-        const btnRestar = document.getElementById(`-${id}`)
-
-        btnAgregar.addEventListener("click", () => aumentarCantidad(id))
-        btnRestar.addEventListener("click", () => restarCantidad(id))
-        
-    });
-
-    dibujarFooter()
-}
-
-const dibujarFooter = () => {
-
-    if(carrito.length > 0){
-        footCarrito.innerHTML = ""
-
-        let footer = document.createElement("tr")
-
-        footer.innerHTML = `
-        <th><b>Totales:</b></th>
-        <td></td>
-        <td>${generarTotales().cantidadTotal}</td>
-        <td></td>
-        <td>${generarTotales().costoTotal}</td>
-        `
-
-        footCarrito.append(footer)
-    }else{
-        footCarrito.innerHTML = "<h3>No hay producto en carrito</h3>"
-    }
-
+footcarrito.append(footer)
+}else{
+    footcarrito.innerHTML = "<h3>No hay productos en el carrito</h3>"
 }
 
 
-const generarTotales = () => {
-    const costoTotal = carrito.reduce((total, { precio }) => total + precio, 0)
-    const cantidadTotal = carrito.reduce((total, {cantidad}) => total + cantidad, 0)
 
-    return {
-        costoTotal: costoTotal,
-        cantidadTotal: cantidadTotal
-    }
 }
 
+const generartotales = () => {
+    const costototal = carrito.reduce((acumulador,{precio}) => total + precios, 0)
+const cantidadtotal = carrito.reduce((total, {cantidad}) => total + cantidad, 0)
+
+return{
+    costototal:costototal,
+    cantidadtotal:cantidadtotal,
+}
+}
 const aumentarCantidad = (id) => {
     const indexProductoCarrito = carrito.findIndex((producto) => producto.id === id)
     const precio = carrito[indexProductoCarrito].precio / carrito[indexProductoCarrito].cantidad
@@ -155,3 +153,5 @@ const restarCantidad = (id) => {
 
 
 }
+
+
