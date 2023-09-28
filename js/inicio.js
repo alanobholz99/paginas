@@ -27,7 +27,7 @@ productos.forEach((producto) => {
 divproductos.appendChild(card);
 
 const bntComprar = document.getElementById(`btn${id}`)
-bntComprar.addEventListener("click", () => comprarproducto("id"))
+bntComprar.addEventListener("click", () => comprarproducto(id))
 });
 };
 
