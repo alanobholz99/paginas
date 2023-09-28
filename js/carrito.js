@@ -2,7 +2,7 @@ import { productosdisponibles } from "./inicio.js";
 
 JSON.parse(sessionStorage.getItem("carrito")) === null && sessionStorage.setItem("carrito", JSON.stringify([]))
 document.addEventListener("DOMContentLoaded", () =>  {
-    dibujarcarrito()
+dibujarcarrito()
 })
 
 let carrito = JSON.parse(sessionStorage.getItem("carrito"))
@@ -22,23 +22,22 @@ if (carritotabla.style.display === "block") {
     dibujarcarrito()
 }
 
-
-});
+})
 
 export const comprarproducto = (idproducto) => {
 
 const producto = productosdisponibles.find((producto) => producto.id === idproducto )
 
-const {imagen, nombre, precio, id} = Element
+const {imagenes, nombre, precio, id} = Element
 
-const productocarrito = carrito.find ((producto) => producto.id === idproducto )
-if (productocarrito === undefined){
+const productoCarrito = carrito.find ((producto) => producto.id === idproducto )
+if (productoCarrito === undefined){
     const nuevoproductocarrito = {
         id:id,
         nombre:nombre,
         precio: precio,
-        imagen: imagen,
-        cantidad: 1
+        imagenes: imagenes,
+        cantidad: 1,
     }
         carrito.push(nuevoproductocarrito)
    sessionStorage.setItem("carrito", JSON.stringify(carrito))
@@ -62,31 +61,33 @@ sessionStorage.setItem("carrito", JSON.stringify(carrito))
 
 const dibujarcarrito = () => {
     
-    listacarrito.innerHTML = ""
+listacarrito.innerHTML = " "
     
-    carrito.forEach(element => {
-        const {imagen, id, nombre, precio} = element
+    carrito.forEach(producto => {
+        const {imagenes, id, nombre, precio, cantidad} = producto
 let body = document.createElement("tr")
+
 body.className = "producto__carrito"
+
+
 body.innerHTML = `
-<th><img id="fotoproductocarrito" src="${imagen}" class = "card-img-top" </th>
+<th><img id="fotoProductoCarrito" src="${imagenes}" class="card-img-top" style="width:40%; height: 30%"</th>
 <td>${nombre}</td>
 <td>${cantidad}</td>
-<td>${precio/cantidad}</td>
+<td>${precio /cantidad}</td>
 <td>${precio}</td>
-
 <td>
-
-<button id="+${id}" class="btn btn-success" >+</button>
-<button id="-${id}" class = "btn btn-danger" >-</button>
+<button id="+${id}" class="btn btn-success">+</button>
+<button id="-${id}" class="btn btn-danger">-</button>
 </td>
 `
 listacarrito.append(body)
-const btnagregar = document.getElementById(`+${id}`)
-const btnrestar = document.getElementById(`-${id}`)
-btnagregar.addEventListener("click", () => aumentarcantidad(id))
-btnrestar.addEventListener("click", () => restarcantidad(id))
+const btnAgregar = document.getElementById(`+${id}`)
+const btnRestar = document.getElementById(`-${id}`)
 
+
+btnAgregar.addEventListener("click", () => aumentarCantidad(id))
+btnRestar.addEventListener("click", () => restarCantidad(id))
 
 });
 dibujarfooter()
@@ -116,7 +117,7 @@ footcarrito.append(footer)
 }
 
 const generartotales = () => {
-    const costototal = carrito.reduce((acumulador,{precio}) => total + precios, 0)
+    const costototal = carrito.reduce((total, {precios}) => total + precios, 0)
 const cantidadtotal = carrito.reduce((total, {cantidad}) => total + cantidad, 0)
 
 return{
@@ -125,14 +126,14 @@ return{
 }
 }
 const aumentarCantidad = (id) => {
-    const indexProductoCarrito = carrito.findIndex((producto) => producto.id === id)
-    const precio = carrito[indexProductoCarrito].precio / carrito[indexProductoCarrito].cantidad
+    const indexProductoCarrito = carrito.findIndex((producto) => producto.id === id);
+    const precio = carrito[indexProductoCarrito].precio / carrito[indexProductoCarrito].cantidad;
 
-    carrito[indexProductoCarrito].cantidad++
-    carrito[indexProductoCarrito].precio = precio*carrito[indexProductoCarrito].cantidad
+    carrito[indexProductoCarrito].cantidad++;
+    carrito[indexProductoCarrito].precio = precio * carrito[indexProductoCarrito].cantidad;
 
-    sessionStorage.setItem("carrito", JSON.stringify(carrito))
-    dibujarCarrito()
+    sessionStorage.setItem("carrito", JSON.stringify(carrito));
+    dibujarcarrito();
 
 }
 
@@ -148,7 +149,7 @@ const restarCantidad = (id) => {
     }
 
     sessionStorage.setItem("carrito", JSON.stringify(carrito))
-    dibujarCarrito()
+    dibujarcarrito()
 
 
 

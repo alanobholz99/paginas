@@ -1,36 +1,33 @@
-import { productos } from "../jss/producto.js";
-import { comprarproducto } from "./carrito.js";
+import { comprarproducto } from "./carrito.js"
 
 const divproductos = document.getElementById("productos")
 export let productosdisponibles = JSON.parse(localStorage.getItem("productos"))
 document.addEventListener("DOMContentLoaded", () => {
     generarcardproductos(productosdisponibles)
-});
+})
 export const generarcardproductos = (productos)  => {
 divproductos.innerHTML = "";
 
-productos.forEach(element => {
+productos.forEach((producto) => {
  
- const {imagen, id, nombre, precio} = element
+ const {imagenes, id, nombre, precio} = producto
     let card = document.createElement("div")
- card.className = "rojo"
+ card.className = "producto";
     card.innerHTML = `
 
 <div class="card" style="width: 18rem;">
-<img src="imagen/${imagen}" class="card-img-top" alt="...">
+<img src="imagen/${imagenes}" class="card-img-top" alt="...">
 <div class= "rojo" class="card-body">
  <p class="card-text">${nombre}</p>
   <p>${precio} </p>
   <button id="btn${id}" class= "btn btn-primary">comprar</button>
 
   </div>
-</div>
- 
- `
+</div>`;
 divproductos.appendChild(card);
 
-const bntcomprar = document.getElementById(`btn${id}`)
-bntcomprar.addEventListener("click", () => comprarproducto("id"))
+const bntComprar = document.getElementById(`btn${id}`)
+bntComprar.addEventListener("click", () => comprarproducto("id"))
 });
 };
 
